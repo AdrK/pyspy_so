@@ -7,22 +7,13 @@ import (
 	// revive:disable:blank-imports Depending on configuration these packages may or may not be used.
 	//   That's why we do a blank import here and then packages themselves register with the rest of the code.
 
-	_ "github.com/pyroscope-io/pyroscope/pkg/agent/debugspy"
-	_ "github.com/pyroscope-io/pyroscope/pkg/agent/dotnetspy"
-	_ "github.com/pyroscope-io/pyroscope/pkg/agent/ebpfspy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/gospy"
-	_ "github.com/pyroscope-io/pyroscope/pkg/agent/phpspy"
-	_ "github.com/pyroscope-io/pyroscope/pkg/agent/pyspy"
-	_ "github.com/pyroscope-io/pyroscope/pkg/agent/rbspy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/types"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream"
-	"github.com/pyroscope-io/pyroscope/pkg/util/slices"
+	_ "github.com/pyroscope-io/pyspy_so/pkg/agent/pyspy"
 
 	// revive:enable:blank-imports
 
 	"github.com/mitchellh/go-ps"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/spy"
-	"github.com/pyroscope-io/pyroscope/pkg/structs/transporttrie"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
+	"github.com/pyroscope-io/pyspy_so/pkg/structs/transporttrie"
 )
 
 type ProfileSession struct {

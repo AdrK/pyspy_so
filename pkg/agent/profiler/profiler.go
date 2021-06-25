@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/pyroscope-io/pyroscope/pkg/agent"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/spy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/types"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream/remote"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/types"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/upstream/remote"
 )
 
 type ProfileType = spy.ProfileType

@@ -14,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pyroscope-io/pyroscope/pkg/agent"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/upstream"
 )
 
 var (

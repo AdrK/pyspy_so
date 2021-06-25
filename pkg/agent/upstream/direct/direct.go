@@ -6,9 +6,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream"
-	"github.com/pyroscope-io/pyroscope/pkg/storage"
-	"github.com/pyroscope-io/pyroscope/pkg/storage/tree"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/upstream"
+	"github.com/pyroscope-io/pyspy_so/pkg/storage"
+	"github.com/pyroscope-io/pyspy_so/pkg/storage/tree"
 )
 
 const upstreamThreads = 1

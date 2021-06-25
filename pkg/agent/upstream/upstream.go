@@ -3,7 +3,7 @@ package upstream
 import (
 	"time"
 
-	"github.com/pyroscope-io/pyroscope/pkg/structs/transporttrie"
+	"github.com/pyroscope-io/pyspy_so/pkg/structs/transporttrie"
 )
 
 type UploadJob struct {

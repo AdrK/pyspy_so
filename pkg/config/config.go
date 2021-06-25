@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/pyroscope-io/pyroscope/pkg/util/bytesize"
+	"github.com/pyroscope-io/pyspy_so/pkg/util/bytesize"
 )
 
 type Config struct {

@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/mitchellh/go-ps"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/rbspy"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/rbspy"
 	"github.com/sirupsen/logrus"
 
-	"github.com/pyroscope-io/pyroscope/pkg/agent"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/pyspy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/spy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream/remote"
-	"github.com/pyroscope-io/pyroscope/pkg/config"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/pyspy"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
+	"github.com/pyroscope-io/pyspy_so/pkg/agent/upstream/remote"
+	"github.com/pyroscope-io/pyspy_so/pkg/config"
 )
 
 var (
