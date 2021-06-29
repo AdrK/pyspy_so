@@ -7,13 +7,15 @@ import (
 	// revive:disable:blank-imports Depending on configuration these packages may or may not be used.
 	//   That's why we do a blank import here and then packages themselves register with the rest of the code.
 
-	_ "github.com/pyroscope-io/pyspy_so/pkg/agent/pyspy"
+	_ "github.com/AdrK/pyspy_so/pkg/agent/pyspy"
+	"github.com/AdrK/pyspy_so/pkg/util/slices"
 
 	// revive:enable:blank-imports
 
+	"github.com/AdrK/pyspy_so/pkg/agent/spy"
+	"github.com/AdrK/pyspy_so/pkg/agent/upstream"
+	"github.com/AdrK/pyspy_so/pkg/structs/transporttrie"
 	"github.com/mitchellh/go-ps"
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
-	"github.com/pyroscope-io/pyspy_so/pkg/structs/transporttrie"
 )
 
 type ProfileSession struct {
@@ -67,13 +69,8 @@ func NewSession(c *SessionConfig, logger Logger) *ProfileSession {
 		logger:           logger,
 	}
 
-	if ps.spyName == types.GoSpy {
-		ps.previousTries = make([]*transporttrie.Trie, len(ps.profileTypes))
-		ps.tries = make([]*transporttrie.Trie, len(ps.profileTypes))
-	} else {
-		ps.previousTries = make([]*transporttrie.Trie, 1)
-		ps.tries = make([]*transporttrie.Trie, 1)
-	}
+	ps.previousTries = make([]*transporttrie.Trie, 1)
+	ps.tries = make([]*transporttrie.Trie, 1)
 
 	return ps
 }
@@ -94,7 +91,7 @@ func (ps *ProfileSession) takeSnapshots() {
 				}
 			}
 
-			for i, s := range ps.spies {
+			for _, s := range ps.spies {
 				s.Snapshot(func(stack []byte, v uint64, err error) {
 					if err != nil {
 						// TODO: figure out what to do with these messages. A couple of considerations:
@@ -107,12 +104,8 @@ func (ps *ProfileSession) takeSnapshots() {
 					if len(stack) > 0 {
 						ps.trieMutex.Lock()
 						defer ps.trieMutex.Unlock()
+						ps.tries[0].Insert(stack, v, true)
 
-						if ps.spyName == types.GoSpy {
-							ps.tries[i].Insert(stack, v, true)
-						} else {
-							ps.tries[0].Insert(stack, v, true)
-						}
 					}
 				})
 			}
@@ -135,24 +128,14 @@ func (ps *ProfileSession) takeSnapshots() {
 func (ps *ProfileSession) Start() error {
 	ps.reset()
 
-	if ps.spyName == types.GoSpy {
-		for _, pt := range ps.profileTypes {
-			s, err := gospy.Start(pt, ps.sampleRate, ps.disableGCRuns)
-			if err != nil {
-				return err
-			}
-
-			ps.spies = append(ps.spies, s)
-		}
-	} else {
-		s, err := spy.SpyFromName(ps.spyName, ps.pids[0])
-		if err != nil {
-			return err
-		}
-
-		ps.spies = append(ps.spies, s)
+	s, err := spy.SpyFromName(ps.spyName, ps.pids[0])
+	if err != nil {
+		return err
 	}
+
+	ps.spies = append(ps.spies, s)
 	go ps.takeSnapshots()
+
 	return nil
 }
 

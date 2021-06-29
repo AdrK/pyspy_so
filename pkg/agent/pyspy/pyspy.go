@@ -3,8 +3,8 @@
 // Package pyspy is a wrapper around this library called pyspy written in Rust
 package pyspy
 
-// #cgo darwin LDFLAGS: -L../../../third_party/rustdeps/target/release -lrustdeps
-// #cgo linux LDFLAGS: -L/home/adrian/Projects/pyspy_so/third_party/rustdeps/target/release/ -lrustdeps
+// #cgo darwin LDFLAGS: -L../../../third_party/rustdeps/ -lrustdeps
+// #cgo linux LDFLAGS: -L/home/adrian/Projects/pyspy_so/third_party/rustdeps/ -lrustdeps
 // #include "../../../third_party/rustdeps/pyspy.h"
 import "C"
 
@@ -13,7 +13,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
+	"github.com/AdrK/pyspy_so/pkg/agent/spy"
 )
 
 // TODO: make this configurable

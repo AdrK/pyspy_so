@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/pyroscope-io/pyspy_so/pkg/util/varint"
+	"github.com/AdrK/pyspy_so/pkg/util/varint"
 )
 
 func (t *Trie) Serialize(w io.Writer) error {

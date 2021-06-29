@@ -10,11 +10,11 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/types"
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/upstream/remote"
-	"github.com/pyroscope-io/pyspy_so/pkg/config"
-	"github.com/pyroscope-io/pyspy_so/pkg/util/names"
+	"github.com/AdrK/pyspy_so/pkg/agent/spy"
+	"github.com/AdrK/pyspy_so/pkg/agent/types"
+	"github.com/AdrK/pyspy_so/pkg/agent/upstream/remote"
+	"github.com/AdrK/pyspy_so/pkg/config"
+	"github.com/AdrK/pyspy_so/pkg/util/names"
 )
 
 const (

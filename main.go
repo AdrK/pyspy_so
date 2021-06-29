@@ -14,13 +14,13 @@ import (
 	"github.com/fatih/color"
 	"github.com/sirupsen/logrus"
 
-	"github.com/pyroscope-io/pyroscope/pkg/agent"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/pyspy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/spy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/types"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream/remote"
-	"github.com/pyroscope-io/pyroscope/pkg/config"
-	"github.com/pyroscope-io/pyroscope/pkg/util/names"
+	"github.com/AdrK/pyspy_so/pkg/agent"
+	"github.com/AdrK/pyspy_so/pkg/agent/pyspy"
+	"github.com/AdrK/pyspy_so/pkg/agent/spy"
+	"github.com/AdrK/pyspy_so/pkg/agent/types"
+	"github.com/AdrK/pyspy_so/pkg/agent/upstream/remote"
+	"github.com/AdrK/pyspy_so/pkg/config"
+	"github.com/AdrK/pyspy_so/pkg/util/names"
 )
 
 func processExists(pid int) bool {

@@ -7,4 +7,4 @@ authors = ["Dmitry Filimonov"]
 crate-type = ["staticlib"]
 
 [dependencies]
-py-spy = { git = "https://github.com/AdrK/py-spy"}
+py-spy = { git = "https://github.com/pyroscope-io/py-spy"}

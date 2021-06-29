@@ -9,11 +9,11 @@ import (
 	"github.com/mitchellh/go-ps"
 	"github.com/sirupsen/logrus"
 
-	"github.com/pyroscope-io/pyspy_so/pkg/agent"
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/pyspy"
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
-	"github.com/pyroscope-io/pyspy_so/pkg/agent/upstream/remote"
-	"github.com/pyroscope-io/pyspy_so/pkg/config"
+	"github.com/AdrK/pyspy_so/pkg/agent"
+	"github.com/AdrK/pyspy_so/pkg/agent/pyspy"
+	"github.com/AdrK/pyspy_so/pkg/agent/spy"
+	"github.com/AdrK/pyspy_so/pkg/agent/upstream/remote"
+	"github.com/AdrK/pyspy_so/pkg/config"
 )
 
 var (

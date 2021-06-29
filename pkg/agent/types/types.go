@@ -1,6 +1,6 @@
 package types
 
-import "github.com/pyroscope-io/pyspy_so/pkg/agent/spy"
+import "github.com/AdrK/pyspy_so/pkg/agent/spy"
 
 const (
 	DefaultSampleRate = 100 // 100 times per second
