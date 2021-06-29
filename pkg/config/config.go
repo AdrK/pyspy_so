@@ -42,7 +42,6 @@ type Target struct {
 	// Spy-specific settings.
 
 	PyspyBlocking bool `yaml:"pyspy-blocking" def:"false" desc:"enables blocking mode for pyspy"`
-	RbspyBlocking bool `yaml:"rbspy-blocking" def:"false" desc:"enables blocking mode for rbspy"`
 }
 
 type Server struct {
@@ -113,5 +112,4 @@ type Exec struct {
 	UserName               string        `def:"" desc:"starts process under specified user name"`
 	GroupName              string        `def:"" desc:"starts process under specified group name"`
 	PyspyBlocking          bool          `def:"false" desc:"enables blocking mode for pyspy"`
-	RbspyBlocking          bool          `def:"false" desc:"enables blocking mode for rbspy"`
 }

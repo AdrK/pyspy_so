@@ -1,12 +1,13 @@
 package main
 
 import (
+	"C"
 	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
-	"strings"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -15,7 +16,6 @@ import (
 
 	"github.com/pyroscope-io/pyroscope/pkg/agent"
 	"github.com/pyroscope-io/pyroscope/pkg/agent/pyspy"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/rbspy"
 	"github.com/pyroscope-io/pyroscope/pkg/agent/spy"
 	"github.com/pyroscope-io/pyroscope/pkg/agent/types"
 	"github.com/pyroscope-io/pyroscope/pkg/agent/upstream/remote"
@@ -23,17 +23,22 @@ import (
 	"github.com/pyroscope-io/pyroscope/pkg/util/names"
 )
 
-func Start(cfg *config.Exec, args []string) error {
+func processExists(pid int) bool {
+	check := nil == syscall.Kill(pid, 0)
+	logrus.Infof("checking if process exists: ", check)
+	return check
+}
+
+func startNewSession(cfg *config.Exec) error {
 	if !processExists(cfg.Pid) {
 		return errors.New("process not found")
 	}
 
 	pyspy.Blocking = cfg.PyspyBlocking
-	rbspy.Blocking = cfg.RbspyBlocking
 
 	spyName := cfg.SpyName
 	if spyName == "auto" {
-		return fmt.Errorf("Not supported")
+		return fmt.Errorf("not supported")
 	}
 
 	logrus.Info("to disable logging from pyroscope, pass " + color.YellowString("-no-logging") + " argument to pyroscope exec")
@@ -47,13 +52,9 @@ func Start(cfg *config.Exec, args []string) error {
 	if cfg.ApplicationName == "" {
 		logrus.Infof("we recommend specifying application name via %s flag or env variable %s",
 			color.YellowString("-application-name"), color.YellowString("PYROSCOPE_APPLICATION_NAME"))
-		cfg.ApplicationName = spyName + "." + names.GetRandomName(generateSeed(args))
+		cfg.ApplicationName = spyName + "." + names.GetRandomName(generateSeed())
 		logrus.Infof("for now we chose the name for you and it's \"%s\"", color.GreenString(cfg.ApplicationName))
 	}
-
-	logrus.WithFields(logrus.Fields{
-		"args": fmt.Sprintf("%q", args),
-	}).Debug("starting command")
 
 	rc := remote.RemoteConfig{
 		AuthToken:              cfg.AuthToken,
@@ -69,7 +70,6 @@ func Start(cfg *config.Exec, args []string) error {
 
 	c := make(chan os.Signal, 10)
 	pid := cfg.Pid
-	var cmd *exec.Cmd
 
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
@@ -138,10 +138,40 @@ func waitForProcessToExit(c chan os.Signal, pid int) {
 	}
 }
 
-func generateSeed(args []string) string {
+func generateSeed() string {
 	cwd, err := os.Getwd()
 	if err != nil {
 		cwd = "<unknown>"
 	}
-	return cwd + "|" + strings.Join(args, "&")
+	return cwd + "|" + "&"
+}
+
+//export Start
+func Start(ApplicationName *C.char, Pid C.int) {
+	logrus.SetLevel(logrus.DebugLevel)
+
+	conf := config.Exec{
+		SpyName:                "pyspy",
+		ApplicationName:        C.GoString(ApplicationName),
+		SampleRate:             100,
+		DetectSubprocesses:     true,
+		LogLevel:               "debug",
+		ServerAddress:          "http://localhost:4040",
+		AuthToken:              "",
+		UpstreamThreads:        4,
+		UpstreamRequestTimeout: time.Second * 10,
+		NoLogging:              false,
+		NoRootDrop:             false,
+		Pid:                    int(Pid),
+		UserName:               "",
+		GroupName:              "",
+		PyspyBlocking:          false,
+	}
+
+	startNewSession(&conf)
+}
+
+func main() {
+	pid, _ := strconv.Atoi(os.Args[2])
+	Start(C.CString(os.Args[1]), C.int(pid))
 }

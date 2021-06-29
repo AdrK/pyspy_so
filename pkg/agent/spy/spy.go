@@ -25,7 +25,6 @@ const (
 
 	Go     = "gospy"
 	Python = "pyspy"
-	Ruby   = "rbspy"
 )
 
 func (t ProfileType) IsCumulative() bool {
@@ -64,15 +63,6 @@ var autoDetectionMapping = map[string]string{
 	"python3": "pyspy",
 	"uwsgi":   "pyspy",
 	"pipenv":  "pyspy",
-
-	"php": "phpspy",
-
-	"ruby":   "rbspy",
-	"bundle": "rbspy",
-	"rails":  "rbspy",
-	"rake":   "rbspy",
-
-	"dotnet": "dotnetspy",
 }
 
 func init() {
