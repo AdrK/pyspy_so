@@ -1,4 +1,4 @@
-GOBUILD=go build -trimpath
+GOBUILD=go build -trimpath -gcflags '-N -l'
 
 ALL_SPIES ?= "pyspy"
 ENABLED_SPIES ?= "pyspy"
@@ -30,6 +30,10 @@ build-rust-dependencies:
 
 	cp ./third_party/rustdeps/target/`uname -m`-unknown-linux-musl/release/*.a ./third_party/rustdeps/
 
-.PHONY: build
-build:
-	$(GOBUILD) -a -tags $(ENABLED_SPIES) -ldflags "-s" -buildmode=c-shared -o libpyspy.so
+.PHONY: build-shared
+build-shared:
+	$(GOBUILD) -a -tags $(ENABLED_SPIES) -buildmode=c-shared -o libpyspy.so
+
+.PHONY: build-exe
+build-exe:
+	$(GOBUILD) -a -tags $(ENABLED_SPIES) -o main

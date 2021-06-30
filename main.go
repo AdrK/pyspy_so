@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
@@ -22,6 +21,7 @@ import (
 	"github.com/AdrK/pyspy_so/pkg/config"
 	"github.com/AdrK/pyspy_so/pkg/util/names"
 )
+import "strconv"
 
 func processExists(pid int) bool {
 	check := nil == syscall.Kill(pid, 0)
@@ -172,6 +172,8 @@ func Start(ApplicationName *C.char, Pid C.int) {
 }
 
 func main() {
+	logrus.SetLevel(logrus.DebugLevel)
+	fmt.Println("app name: '", os.Args[1], "' pid: ", os.Args[2])
 	pid, _ := strconv.Atoi(os.Args[2])
 	Start(C.CString(os.Args[1]), C.int(pid))
 }
