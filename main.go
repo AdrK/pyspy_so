@@ -24,9 +24,7 @@ import (
 import "strconv"
 
 func processExists(pid int) bool {
-	check := nil == syscall.Kill(pid, 0)
-	logrus.Infof("checking if process exists: ", check)
-	return check
+	return nil == syscall.Kill(pid, 0)
 }
 
 func startNewSession(cfg *config.Exec) error {
@@ -42,12 +40,6 @@ func startNewSession(cfg *config.Exec) error {
 	}
 
 	logrus.Info("to disable logging from pyroscope, pass " + color.YellowString("-no-logging") + " argument to pyroscope exec")
-
-	/*
-		if err := performChecks(spyName); err != nil {
-			return err
-		}
-	*/
 
 	if cfg.ApplicationName == "" {
 		logrus.Infof("we recommend specifying application name via %s flag or env variable %s",
@@ -147,16 +139,14 @@ func generateSeed() string {
 }
 
 //export Start
-func Start(ApplicationName *C.char, Pid C.int) {
-	logrus.SetLevel(logrus.DebugLevel)
-
-	conf := config.Exec{
-		SpyName:                "pyspy",
+func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) {
+	startNewSession(&config.Exec{
+		SpyName:                C.GoString(SpyName),
 		ApplicationName:        C.GoString(ApplicationName),
 		SampleRate:             100,
 		DetectSubprocesses:     true,
 		LogLevel:               "debug",
-		ServerAddress:          "http://192.168.5.16:4040",
+		ServerAddress:          C.GoString(ServerAddress),
 		AuthToken:              "",
 		UpstreamThreads:        4,
 		UpstreamRequestTimeout: time.Second * 10,
@@ -166,14 +156,12 @@ func Start(ApplicationName *C.char, Pid C.int) {
 		UserName:               "",
 		GroupName:              "",
 		PyspyBlocking:          false,
-	}
-
-	startNewSession(&conf)
+	})
 }
 
 func main() {
 	logrus.SetLevel(logrus.DebugLevel)
-	fmt.Println("app name: '", os.Args[1], "' pid: ", os.Args[2])
+	fmt.Println("app name:", os.Args[1], "pid: ", os.Args[2], "spy name: ", os.Args[3], "server address: ", os.Args[4])
 	pid, _ := strconv.Atoi(os.Args[2])
-	Start(C.CString(os.Args[1]), C.int(pid))
+	Start(C.CString(os.Args[1]), C.int(pid), C.CString(os.Args[3]), C.CString(os.Args[4]))
 }
