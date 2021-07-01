@@ -97,6 +97,8 @@ func startNewSession(cfg *config.Exec) error {
 	}
 	defer session.Stop()
 
+	// TODO: Find a way to stop the session
+	// TODO: This makes no sense if session is started by the app itself, or does it?
 	waitForProcessToExit(c, pid)
 	return nil
 }
@@ -125,6 +127,8 @@ func waitForProcessToExit(c chan os.Signal, pid int) {
 			if !processExists(pid) {
 				logrus.Debug("child process exited")
 				return
+			} else {
+				logrus.Debug("Process with pid ", pid, " still exists")
 			}
 		}
 	}
@@ -140,6 +144,7 @@ func generateSeed() string {
 
 //export Start
 func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) {
+	logrus.SetLevel(logrus.DebugLevel)
 	startNewSession(&config.Exec{
 		SpyName:                C.GoString(SpyName),
 		ApplicationName:        C.GoString(ApplicationName),
