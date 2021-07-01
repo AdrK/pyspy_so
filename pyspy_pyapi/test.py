@@ -1,8 +1,9 @@
+from multiprocessing import Process
+from pyspy_pyapi import start_spy
 from time import sleep
 import os
-from pyspy_pyapi.pyspy_pyapi import start_spy
+import signal
 import threading
-from multiprocessing import Process
 
 
 def work(n):
@@ -16,9 +17,6 @@ def fast_function():
     while True:
         work(30000)
         k += 1
-        if k == 10000:
-            print("Done working fast")
-            return
 
 
 def slow_function():
@@ -26,25 +24,31 @@ def slow_function():
     while True:
         work(50000)
         k += 1
-        if k == 10000:
-            print("Done working slow")
-            return
+
+
+def killer(p, timeout):
+    sleep(timeout)
+    #gpid = os.getpgid(p.pid)
+    #print("Terminating pid: ", p.pid, " gpid: ", gpid)
+    #os.killpg(gpid, signal.SIGTERM)
+    print("Terminating pid: ", p.pid)
+    os.kill(p.pid, signal.SIGTERM)
 
 
 if __name__ == "__main__":
-    p = Process(target=fast_function)
-    p.start()
+    pr = []
+    pr.append(Process(target=fast_function))
+    pr.append(Process(target=slow_function))
+    
+    [p.start() for p in pr]
+    [threading.Thread(target=killer, args=(p, 10)).start() for p in pr]
 
-    spy = Process(target=start_spy, args=("test name", p.pid, "http://192.168.5.16:4040"))
-    spy.start()
-    print("Own pid: ", os.getpid())
-    print("Started spy for pid: ", p.pid)
-    print("Spy pid: ", spy.pid)
-
-    #start_spy("test name", pr[1].pid, "http://192.168.5.16:4040")
-
-    sleep(20)
-    p.join()
-    p.terminate()
-    spy.terminate()
-
+    for p in pr:
+        gpid = os.getpgid(p.pid)
+        print("Started pid: ", p.pid, " gpid: ", gpid)
+        
+    main_pid = os.getpid()
+    main_gpid = os.getpgid(p.pid)
+    print("Main pid: ", main_pid, " gpid: ", main_gpid)
+    
+    start_spy("test name", main_pid, "http://192.168.5.16:4040")

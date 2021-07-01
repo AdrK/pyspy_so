@@ -24,7 +24,12 @@ import (
 import "strconv"
 
 func processExists(pid int) bool {
-	return nil == syscall.Kill(pid, 0)
+	// TODO: Is this accurate?
+	exists := nil == syscall.Kill(pid, 0)
+	//_, err := os.FindProcess(int(pid))
+	//exists := err == nil
+	logrus.Debug("Process: ", pid, " exists? ", exists)
+	return exists
 }
 
 func startNewSession(cfg *config.Exec) error {
@@ -127,8 +132,6 @@ func waitForProcessToExit(c chan os.Signal, pid int) {
 			if !processExists(pid) {
 				logrus.Debug("child process exited")
 				return
-			} else {
-				logrus.Debug("Process with pid ", pid, " still exists")
 			}
 		}
 	}
@@ -145,6 +148,9 @@ func generateSeed() string {
 //export Start
 func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) {
 	logrus.SetLevel(logrus.DebugLevel)
+
+	// TODO: It might be more useful if it would be []pids instead of pid
+
 	startNewSession(&config.Exec{
 		SpyName:                C.GoString(SpyName),
 		ApplicationName:        C.GoString(ApplicationName),

@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/AdrK/pyspy_so/pkg/agent/pyspy"
 	"github.com/AdrK/pyspy_so/pkg/util/slices"
+	"github.com/sirupsen/logrus"
 
 	// revive:enable:blank-imports
 
@@ -166,6 +167,7 @@ func (ps *ProfileSession) reset() {
 }
 
 func (ps *ProfileSession) Stop() {
+	logrus.Debug("session finished")
 	ps.trieMutex.Lock()
 	defer ps.trieMutex.Unlock()
 
