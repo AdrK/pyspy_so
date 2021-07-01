@@ -156,7 +156,7 @@ func Start(ApplicationName *C.char, Pid C.int) {
 		SampleRate:             100,
 		DetectSubprocesses:     true,
 		LogLevel:               "debug",
-		ServerAddress:          "http://localhost:4040",
+		ServerAddress:          "http://192.168.5.16:4040",
 		AuthToken:              "",
 		UpstreamThreads:        4,
 		UpstreamRequestTimeout: time.Second * 10,
