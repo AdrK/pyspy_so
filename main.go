@@ -2,15 +2,13 @@ package main
 
 import (
 	"C"
-	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/sirupsen/logrus"
 
 	"github.com/AdrK/pyspy_so/pkg/agent"
@@ -19,39 +17,19 @@ import (
 	"github.com/AdrK/pyspy_so/pkg/agent/types"
 	"github.com/AdrK/pyspy_so/pkg/agent/upstream/remote"
 	"github.com/AdrK/pyspy_so/pkg/config"
-	"github.com/AdrK/pyspy_so/pkg/util/names"
 )
-import "strconv"
 
 func processExists(pid int) bool {
-	// TODO: Is this accurate?
 	exists := nil == syscall.Kill(pid, 0)
-	//_, err := os.FindProcess(int(pid))
-	//exists := err == nil
-	logrus.Debug("Process: ", pid, " exists? ", exists)
 	return exists
 }
 
 func startNewSession(cfg *config.Exec) error {
-	if !processExists(cfg.Pid) {
-		return errors.New("process not found")
-	}
-
-	pyspy.Blocking = cfg.PyspyBlocking
+	// TODO: Removed some checks to simplify. Bring them back at the end.
 
 	spyName := cfg.SpyName
-	if spyName == "auto" {
-		return fmt.Errorf("not supported")
-	}
-
-	logrus.Info("to disable logging from pyroscope, pass " + color.YellowString("-no-logging") + " argument to pyroscope exec")
-
-	if cfg.ApplicationName == "" {
-		logrus.Infof("we recommend specifying application name via %s flag or env variable %s",
-			color.YellowString("-application-name"), color.YellowString("PYROSCOPE_APPLICATION_NAME"))
-		cfg.ApplicationName = spyName + "." + names.GetRandomName(generateSeed())
-		logrus.Infof("for now we chose the name for you and it's \"%s\"", color.GreenString(cfg.ApplicationName))
-	}
+	pid := cfg.Pid
+	pyspy.Blocking = cfg.PyspyBlocking
 
 	rc := remote.RemoteConfig{
 		AuthToken:              cfg.AuthToken,
@@ -66,8 +44,6 @@ func startNewSession(cfg *config.Exec) error {
 	defer u.Stop()
 
 	c := make(chan os.Signal, 10)
-	pid := cfg.Pid
-
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	defer func() {
@@ -102,19 +78,8 @@ func startNewSession(cfg *config.Exec) error {
 	}
 	defer session.Stop()
 
-	// TODO: Find a way to stop the session
-	// TODO: This makes no sense if session is started by the app itself, or does it?
 	waitForProcessToExit(c, pid)
 	return nil
-}
-
-func waitForSpawnedProcessToExit(c chan os.Signal, cmd *exec.Cmd) error {
-	go func() {
-		for s := range c {
-			_ = cmd.Process.Signal(s)
-		}
-	}()
-	return cmd.Wait()
 }
 
 func waitForProcessToExit(c chan os.Signal, pid int) {
@@ -135,14 +100,6 @@ func waitForProcessToExit(c chan os.Signal, pid int) {
 			}
 		}
 	}
-}
-
-func generateSeed() string {
-	cwd, err := os.Getwd()
-	if err != nil {
-		cwd = "<unknown>"
-	}
-	return cwd + "|" + "&"
 }
 
 //export Start
