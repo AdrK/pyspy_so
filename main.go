@@ -12,7 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/AdrK/pyspy_so/pkg/agent"
-	"github.com/AdrK/pyspy_so/pkg/agent/pyspy"
 	"github.com/AdrK/pyspy_so/pkg/agent/spy"
 	"github.com/AdrK/pyspy_so/pkg/agent/types"
 	"github.com/AdrK/pyspy_so/pkg/agent/upstream/remote"
@@ -29,7 +28,7 @@ func startNewSession(cfg *config.Exec) error {
 
 	spyName := cfg.SpyName
 	pid := cfg.Pid
-	pyspy.Blocking = cfg.PyspyBlocking
+	//pyspy.Blocking = cfg.PyspyBlocking // TODO: Set it somwhere in cfg
 
 	rc := remote.RemoteConfig{
 		AuthToken:              cfg.AuthToken,

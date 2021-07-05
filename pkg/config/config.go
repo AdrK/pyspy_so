@@ -3,7 +3,6 @@ package config
 import (
 	"time"
 
-	"github.com/AdrK/pyspy_so/pkg/util/bytesize"
 )
 
 type Config struct {
@@ -74,7 +73,6 @@ type Server struct {
 	// Deprecated fields. They can be set (for backwards compatibility) but have no effect
 	// TODO: we should print some warning messages when people try to use these
 	SampleRate          uint              `deprecated:"true"`
-	OutOfSpaceThreshold bytesize.ByteSize `deprecated:"true"`
 	CacheDimensionSize  int               `deprecated:"true"`
 	CacheDictionarySize int               `deprecated:"true"`
 	CacheSegmentSize    int               `deprecated:"true"`
