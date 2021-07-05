@@ -9,4 +9,4 @@ setup(name="pyspy_pyapi",
         license="MIT",
         packages=["pyspy_pyapi"],
         include_package_data=True,
-        package_data={'': ['./libpyspy.so', './libpyspy.h']})
+        package_data={'': ['./pyspy_pyapi/libpyspy.so', './pyspy_pyapi/libpyspy.h']})

@@ -35,14 +35,14 @@ clean::
 
 .PHONY: pip-package
 pip-package: build-shared
-	cp libpyspy.h pyspy_pyapi/
-	cp libpyspy.so pyspy_pyapi/
+	cp libpyspy.h pyspy_pyapi/pyspy_pyapi/
+	cp libpyspy.so pyspy_pyapi/pyspy_pyapi/
 	python3 -m build ./pyspy_pyapi/
 
 .PHONY: pip-package-install
 pip-package-install: build-shared
-	cp libpyspy.h pyspy_pyapi/
-	cp libpyspy.so pyspy_pyapi/
+	cp libpyspy.h pyspy_pyapi/pyspy_pyapi/
+	cp libpyspy.so pyspy_pyapi/pyspy_pyapi/
 	python3 -m pip install --use-feature=in-tree-build ./pyspy_pyapi/
 
 .PHONY: all

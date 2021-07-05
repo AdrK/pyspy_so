@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from pyspy_pyapi import pyspy_pyapi
 from multiprocessing import Process
 from threading import Thread
