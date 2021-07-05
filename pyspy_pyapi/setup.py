@@ -8,4 +8,5 @@ setup(name="pyspy_pyapi",
         author_email="adrian.kurylak@gmail.com",
         license="MIT",
         packages=["pyspy_pyapi"],
-        zip_safe=False)
+        include_package_data=True,
+        package_data={'': ['./libpyspy.so', './libpyspy.h']})
