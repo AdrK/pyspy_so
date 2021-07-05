@@ -1,8 +1,8 @@
 ALL_SPIES ?= "pyspy"
 ENABLED_SPIES ?= "pyspy"
 RUSTC_TARGET ?= `uname -m`-unknown-linux-gnu
-GOBUILD=go build -a -tags $(ENABLED_SPIES) -trimpath
-#GOBUILD=go build -a -tags $(ENABLED_SPIES) -trimpath -gcflags '-N -l'
+GOBUILD=go build -tags $(ENABLED_SPIES) -trimpath
+#GOBUILD=go build -tags $(ENABLED_SPIES) -trimpath -gcflags '-N -l'
 
 ifndef $(GOPATH)
 	GOPATH=$(shell go env GOPATH || true)
@@ -32,5 +32,15 @@ clean::
 	rm -fr main libpyspy.a libpyspy.so libpyspy.h
 	cd ./third_party/rustdeps/ && ${MAKE} clean
 
+.PHONY: pip-package
+pip-package: build-shared
+	cp libpyspy.h pyspy_pyapi/
+	cp libpyspy.so pyspy_pyapi/
+	python3 -m build ./pyspy_pyapi/
+
+.PHONY: pip-package-install
+pip-package-install: pip-package
+	python3 -m pip install --use-feature=in-tree-build ./pyspy_pyapi
+
 .PHONY: all
-all: build-rust-dependencies build-exe build-shared build-static
+all: build-rust-dependencies build-shared build-static build-exe clean pip-package pip-package-install

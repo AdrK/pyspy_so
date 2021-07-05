@@ -1,3 +1,4 @@
+*.egg-info/
 *.exe
 *.internal
 *.pyc
@@ -17,6 +18,7 @@ Cargo.lock
 benchmark/.env
 benchmark/git-info.env
 build
+dist/
 libpyspy.a
 libpyspy.h
 libpyspy.so
