@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 
 @dataclass
-class PyspySession:
+class _PyspySession:
     PYSPY_LIB_NAME = "libpyspy.so"
     PYSPY_LIB_PATH = os.path.join(pathlib.Path(__file__).parent.resolve(), PYSPY_LIB_NAME)
     
@@ -26,6 +26,6 @@ class PyroscopePyspy:
         self.sessions = []
 
     def start(self, app_name, pid, server_address) -> None:
-        session = PyspySession(pid, app_name, server_address)
+        session = _PyspySession(pid, app_name, server_address)
         session.start()
         self.sessions.append(session)

@@ -1,0 +1,2 @@
+include pyspy_pyapi/libpyspy.h
+include pyspy_pyapi/libpyspy.so

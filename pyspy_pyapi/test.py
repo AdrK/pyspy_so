@@ -1,6 +1,6 @@
+from pyspy_pyapi import pyspy_pyapi
 from multiprocessing import Process
 from threading import Thread
-from pyspy_pyapi import PyroscopePyspy
 from time import sleep
 import os
 import signal
@@ -31,7 +31,7 @@ def killer(p, timeout):
 
 def start_session(app_name, pid, server_address):
     print("Pyspy session pid: ", os.getpid())
-    spy = PyroscopePyspy()
+    spy = pyspy_pyapi.PyroscopePyspy()
     spy.start(app_name, pid, server_address)
 
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     p = Process(target=start_workers)
     p.start()
-    
+
     session = Thread(target=start_session, args=("test name", p.pid, "http://192.168.5.16:4040"))
     session.start()
 
