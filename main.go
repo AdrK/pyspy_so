@@ -4,7 +4,6 @@ import (
 	"C"
 	"fmt"
 	"os"
-	"os/signal"
 	"strconv"
 	"syscall"
 	"time"
@@ -23,7 +22,13 @@ func processExists(pid int) bool {
 	return exists
 }
 
-func startNewSession(cfg *config.Exec) error {
+type PyspySession struct {
+	session *agent.ProfileSession
+}
+
+var pyspy_session = PyspySession{}
+
+func (pys PyspySession) startNewSession(cfg *config.Exec) (*agent.ProfileSession, error) {
 	// TODO: Removed some checks to simplify. Bring them back at the end.
 
 	spyName := cfg.SpyName
@@ -38,17 +43,9 @@ func startNewSession(cfg *config.Exec) error {
 	}
 	u, err := remote.New(rc, logrus.StandardLogger())
 	if err != nil {
-		return fmt.Errorf("new remote upstream: %v", err)
+		return nil, fmt.Errorf("new remote upstream: %v", err)
 	}
-	defer u.Stop()
-
-	c := make(chan os.Signal, 10)
-	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-
-	defer func() {
-		signal.Stop(c)
-		close(c)
-	}()
+	//defer u.Stop()
 
 	logrus.WithFields(logrus.Fields{
 		"app-name":            cfg.ApplicationName,
@@ -73,41 +70,20 @@ func startNewSession(cfg *config.Exec) error {
 	}
 	session := agent.NewSession(&sc, logrus.StandardLogger())
 	if err = session.Start(); err != nil {
-		return fmt.Errorf("start session: %v", err)
+		return nil, fmt.Errorf("start session: %v", err)
 	}
-	defer session.Stop()
+	//defer session.Stop()
 
-	waitForProcessToExit(c, pid)
-	return nil
-}
-
-func waitForProcessToExit(c chan os.Signal, pid int) {
-	if pid == -1 {
-		<-c
-		return
-	}
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-c:
-			return
-		case <-ticker.C:
-			if !processExists(pid) {
-				logrus.Debug("child process exited")
-				return
-			}
-		}
-	}
+	return session, nil
 }
 
 //export Start
-func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) {
+func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) int {
 	logrus.SetLevel(logrus.DebugLevel)
 
 	// TODO: It might be more useful if it would be []pids instead of pid
 
-	startNewSession(&config.Exec{
+	s, err := pyspy_session.startNewSession(&config.Exec{
 		SpyName:                C.GoString(SpyName),
 		ApplicationName:        C.GoString(ApplicationName),
 		SampleRate:             100,
@@ -124,6 +100,20 @@ func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C
 		GroupName:              "",
 		PyspyBlocking:          false,
 	})
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return -1
+	}
+
+	pyspy_session.session = s
+
+	return 0
+}
+
+//export Stop
+func Stop(Pid C.int) {
+	pyspy_session.session.Stop()
 }
 
 func main() {
@@ -131,4 +121,6 @@ func main() {
 	fmt.Println("app name:", os.Args[1], "pid: ", os.Args[2], "spy name: ", os.Args[3], "server address: ", os.Args[4])
 	pid, _ := strconv.Atoi(os.Args[2])
 	Start(C.CString(os.Args[1]), C.int(pid), C.CString(os.Args[3]), C.CString(os.Args[4]))
+	time.Sleep(11 * time.Second)
+	Stop(C.int(pid))
 }

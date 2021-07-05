@@ -30,12 +30,6 @@ def killer(p, timeout):
     os.kill(p.pid, signal.SIGTERM)
 
 
-def start_session(app_name, pid, server_address):
-    print("Pyspy session pid: ", os.getpid())
-    spy = pyspy_pyapi.PyroscopePyspy()
-    spy.start(app_name, pid, server_address)
-
-
 def start_workers():
     pr = []
     pr.append(Process(target=fast_function))
@@ -57,9 +51,10 @@ if __name__ == "__main__":
 
     p = Process(target=start_workers)
     p.start()
+    print("Workers process pid: ", p.pid)
 
-    session = Thread(target=start_session, args=("test name", p.pid, "http://192.168.5.16:4040"))
-    session.start()
+    spy = pyspy_pyapi.PyroscopePyspy()
+    spy.start("test name", p.pid, "http://localhost:4040")
 
     p.join()
-    session.join()
+    spy.stop(p.pid)

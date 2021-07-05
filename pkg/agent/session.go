@@ -177,6 +177,8 @@ func (ps *ProfileSession) Stop() {
 
 	// before stopping, upload the tries
 	ps.uploadTries(time.Now())
+
+	ps.upstream.Stop()
 }
 
 // upload the read profile data about 10s to server

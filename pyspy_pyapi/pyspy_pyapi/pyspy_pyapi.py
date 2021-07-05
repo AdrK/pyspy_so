@@ -18,6 +18,9 @@ class _PyspySession:
         c_server_address = ctypes.c_char_p(self.server_address.encode("UTF-8"))
         c_spyname = ctypes.c_char_p("pyspy".encode("UTF-8"))
         self.pyspy.Start(c_app_name, self.pid, c_spyname, c_server_address)
+    
+    def stop(self):
+        self.pyspy.Stop(self.pid)
 
 
 class PyroscopePyspy:
@@ -29,3 +32,10 @@ class PyroscopePyspy:
         session = _PyspySession(pid, app_name, server_address)
         session.start()
         self.sessions.append(session)
+
+    def stop(self, pid):
+        for s in self.sessions:
+            if s.pid == pid:
+                s.stop()
+                self.sessions.remove(s)
+
