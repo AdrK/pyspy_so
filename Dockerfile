@@ -18,4 +18,4 @@ WORKDIR /opt/pyroscope
 COPY --from=rust-builder /opt/pyroscope/rustdeps/*.a ./third_party/rustdeps/
 COPY --from=rust-builder /opt/pyroscope/rustdeps/*.h ./third_party/rustdeps/
 COPY . .
-RUN make RUSTC_TARGET=x86_64-unknown-linux-gnu build-shared build-static build-exe pip-package
+RUN make RUSTC_TARGET=x86_64-unknown-linux-gnu build-shared build-static build-exe
