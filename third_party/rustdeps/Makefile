@@ -14,8 +14,8 @@ all:
 
 	cp ./libunwind-${LIBUNWIND_VERSION}/install/lib/*.a ./
 
-	RUSTFLAGS="-C relocation-model=pic -L${PWD}" cargo build --release --target ${RUSTC_TARGET}
-#RUSTFLAGS="-C relocation-model=pic -C target-feature=+crt-static -L${PWD}" cargo build --release --target ${RUSTC_TARGET}
+#RUSTFLAGS="-C relocation-model=pic -L${PWD}" cargo build --release --target ${RUSTC_TARGET}
+	RUSTFLAGS="-C target-feature=+crt-static -L${PWD}" cargo build --release --target ${RUSTC_TARGET}
 
 	cp ./target/${RUSTC_TARGET}/release/*.a ./
 

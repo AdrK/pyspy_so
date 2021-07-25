@@ -4,7 +4,7 @@
 package pyspy
 
 // #cgo darwin LDFLAGS: -L../../../third_party/rustdeps/ -lrustdeps -lrt -lunwind-ptrace -lunwind-x86_64 -lunwind -lm -ldl
-// #cgo linux LDFLAGS: -L../../../third_party/rustdeps/ -lrustdeps -lrt -lunwind-ptrace -lunwind-x86_64 -lunwind -lm -ldl
+// #cgo linux LDFLAGS:  -lrt -lm -ldl -L../../../third_party/rustdeps/ -lrustdeps -lunwind-ptrace -lunwind-x86_64 -lunwind
 // #include "../../../third_party/rustdeps/pyspy.h"
 import "C"
 

@@ -77,8 +77,8 @@ func (pys PyspySession) startNewSession(cfg *config.Exec) (*agent.ProfileSession
 	return session, nil
 }
 
-//export Start
-func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) int {
+//export Pyroscope_start
+func Pyroscope_start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C.char) int {
 	logrus.SetLevel(logrus.DebugLevel)
 
 	// TODO: It might be more useful if it would be []pids instead of pid
@@ -111,8 +111,8 @@ func Start(ApplicationName *C.char, Pid C.int, SpyName *C.char, ServerAddress *C
 	return 0
 }
 
-//export Stop
-func Stop(Pid C.int) {
+//export Pyroscope_stop
+func Pyroscope_stop(Pid C.int) {
 	pyspy_session.session.Stop()
 }
 
@@ -120,7 +120,7 @@ func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	fmt.Println("app name:", os.Args[1], "pid: ", os.Args[2], "spy name: ", os.Args[3], "server address: ", os.Args[4])
 	pid, _ := strconv.Atoi(os.Args[2])
-	Start(C.CString(os.Args[1]), C.int(pid), C.CString(os.Args[3]), C.CString(os.Args[4]))
+	Pyroscope_start(C.CString(os.Args[1]), C.int(pid), C.CString(os.Args[3]), C.CString(os.Args[4]))
 	time.Sleep(11 * time.Second)
-	Stop(C.int(pid))
+	Pyroscope_stop(C.int(pid))
 }
